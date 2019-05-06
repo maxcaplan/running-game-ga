@@ -5,16 +5,23 @@ let blocks = []
 const G = 2
 let speed = 8
 
-const minDist = 50
+const minDist = 40
 const rate = 0.60
 let time = 0
 
 let width = 600
 const height = 250
 
-var aNum = 50
-var agents = []
-var savedAgents = []
+let aNum = 10
+let agents = []
+let savedAgents = []
+
+let bestModel = null
+let bestWeights = null
+
+let points = []
+let lines = []
+let model = []
 
 function setup() {
   width = windowWidth - 80
@@ -71,6 +78,7 @@ function draw() {
     nextGeneration();
     score = 0;
     blocks = [];
+    speed = 8
     Y = 0
     YV = 0
     time = frameCount
@@ -99,6 +107,10 @@ function draw() {
     }
   }
 
+  if (bestModel) {
+    drawModel()
+  }
+
   if (frameCount - time >= minDist) {
     time = frameCount
 
@@ -119,5 +131,24 @@ function draw() {
   score += Math.ceil(frameCount / 100)
   if (speed < 19) {
     speed = (frameCount * 0.005) + 8
+  }
+
+  document.getElementById('agents').innerHTML = agents.length
+}
+
+function drawModel() {
+  strokeWeight(2)
+  for (layer of lines) {
+    for (l of layer) {
+      stroke(40, 40, 40, 255 - l.c)
+      line(l.x1, l.y1, l.x2, l.y2)
+    }
+  }
+
+  noStroke()
+  for (layer of points) {
+    for (p of layer) {
+      ellipse(p.x, p.y, 20, 20)
+    }
   }
 }
