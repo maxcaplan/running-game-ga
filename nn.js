@@ -1,10 +1,18 @@
 class NeuralNetwork {
-    constructor(a, b, c) {
-        // this.model = a
-        this.input_nodes = a
-        this.hidden_nodes = b
-        this.output_nodes = c
-        this.createModel();
+    constructor(a, b, c, d) {
+        // If a is a model create neural network with models weights
+        if (a instanceof tf.Sequential) {
+            this.model = a;
+            this.input_nodes = b;
+            this.hidden_nodes = c;
+            this.output_nodes = d;
+        } else {
+            // if a is an int then create new neural network with random weights
+            this.input_nodes = a;
+            this.hidden_nodes = b;
+            this.output_nodes = c;
+            this.createModel();
+        }
     }
 
     createModel() {
@@ -20,6 +28,7 @@ class NeuralNetwork {
         })
         this.model.add(hidden)
         this.model.add(output)
+        return this.model
     }
 
     predict(inputs) {
@@ -35,7 +44,53 @@ class NeuralNetwork {
         })
     }
 
+    mutate(rate) {
+        tf.tidy(() => {
+            const weights = this.model.getWeights();
+            const mutatedWeights = [];
+            for (let i = 0; i < weights.length; i++) {
+                let tensor = weights[i];
+                let shape = weights[i].shape;
+                let values = tensor.dataSync().slice();
+                for (let j = 0; j < values.length; j++) {
+                    if (random(1) < rate) {
+                        let w = values[j];
+                        values[j] = w + randomGaussian();
+                    }
+                }
+                let newTensor = tf.tensor(values, shape);
+                mutatedWeights[i] = newTensor;
+            }
+            this.model.setWeights(mutatedWeights);
+        });
+    }
+
+    copy() {
+        return tf.tidy(() => {
+            // create new model to copy weights on to
+            const modelCopy = this.createModel();
+            // get old models weights
+            const weights = this.model.getWeights();
+
+            // copy old models weights into new array
+            const weightCopies = [];
+            for (let i = 0; i < weights.length; i++) {
+                weightCopies[i] = weights[i].clone()
+            }
+
+            // put copied weights into new model
+            modelCopy.setWeights(weightCopies)
+
+            // return a new neural network with copied weights
+            return new NeuralNetwork(modelCopy, this.input_nodes, this.hidden_nodes, this.output_nodes);
+        })
+    }
+
+    mutate() {
+
+    }
+
     dispose() {
-        this.model.dispose();
+        // this.model.dispose();
     }
 }

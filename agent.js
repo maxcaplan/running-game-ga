@@ -2,14 +2,16 @@ class Agent {
     constructor(h, brain) {
         this.Y = 0
         this.YV = 0
-        this.agentScore
+        this.fitness
+        this.score
+
         // todo: remove this.height
         this.height = h
 
         if (brain) {
             this.brain = brain.copy();
         } else {
-            this.brain = new NeuralNetwork(3, 6, 2);
+            this.brain = new NeuralNetwork(4, 6, 2);
         }
     }
 
@@ -37,9 +39,34 @@ class Agent {
     }
 
     checkCol(blocks) {
-        if (blocks.some(e => e.x >= 80 && e.x <= 120)) {
-            return (this.Y < 40)
+        let block = blocks.find(e => e.x >= 80 && e.x <= 120)
+
+        if (block) {
+            // console.log(blocks.indexOf(block))
+            // element = blocks[blocks.indexOf(block)]
+            if (this.Y >= block.y && this.Y <= block.y + 40) {
+                return true
+            } else {
+                this.score = score
+                return false
+            }
+        } else {
+            this.score = score
         }
+
+        // if (blocks.some(e => e.x >= 80 && e.x <= 120)) {
+        //     if(this.Y <= e.y && this.Y >= e.y - 40) {
+        //         return true
+        //     } else {
+        //         return false
+        //     }
+        // } else {
+        //     this.score = score
+        // }
+    }
+
+    mutate() {
+        this.brain.mutate()
     }
 
     think(blocks) {
@@ -62,16 +89,22 @@ class Agent {
         inputs[1] = this.Y
         // 3. Y Velocity
         inputs[2] = this.YV
+        // 4. closest blocks y
+        if (closest) {
+            inputs[3] = closest.y
+        } else {
+            inputs[3] = Infinity
+        }
 
         // pass in values to brain and predict to jump or not
         let outputs = this.brain.predict(inputs)
         // if output 1 > output 2 then jump
-        if(outputs[0] > outputs[1]) {
+        if (outputs[0] > outputs[1]) {
             this.jump()
         }
     }
 
-    kill() {
+    dispose() {
         this.brain.dispose()
-     }
+    }
 }
