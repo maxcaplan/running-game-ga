@@ -71,5 +71,7 @@ class Agent {
         }
     }
 
-    kill() { }
+    kill() {
+        this.brain.dispose()
+     }
 }

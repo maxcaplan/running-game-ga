@@ -49,9 +49,9 @@ function draw() {
     agents[i].move()
     agents[i].think(blocks)
 
-    if(agents[i].checkCol(blocks)) {
+    if (agents[i].checkCol(blocks)) {
       agents[i].kill()
-      agents.splice(i,1)
+      agents.splice(i, 1)
     }
   }
 
@@ -78,7 +78,9 @@ function draw() {
   }
 
   score += Math.ceil(frameCount / 100)
-  speed = (frameCount * 0.001) + 8
+  if (speed < 19) {
+    speed = (frameCount * 0.005) + 8
+  }
 }
 
 // function kill() {

@@ -23,13 +23,19 @@ class NeuralNetwork {
     }
 
     predict(inputs) {
-        // put input values into tensor
-        const xs = tf.tensor2d([inputs]);
-        // make prediction
-        const ys = this.model.predict(xs);
-        // fetch data from processor
-        const outputs = ys.dataSync();
+        return tf.tidy(() => {
+            // put input values into tensor
+            const xs = tf.tensor2d([inputs]);
+            // make prediction
+            const ys = this.model.predict(xs);
+            // fetch data from processor
+            const outputs = ys.dataSync();
 
-        return outputs
+            return outputs
+        })
+    }
+
+    dispose() {
+        this.model.dispose();
     }
 }
