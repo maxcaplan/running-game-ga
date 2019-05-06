@@ -12,7 +12,7 @@ let time = 0
 let width = 600
 const height = 250
 
-var aNum = 40
+var aNum = 50
 var agents = []
 var savedAgents = []
 
@@ -90,7 +90,7 @@ function draw() {
   fill(250, 100, 100)
   //   draw blocks
   for (var i = 0; i < blocks.length; i++) {
-    rect(blocks[i].x, height - 50 - blocks[i].y, 40, 30)
+    rect(blocks[i].x, height - 60 - blocks[i].y, 40, 40)
 
     if (blocks[i].x <= 0) {
       blocks.shift()

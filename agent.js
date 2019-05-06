@@ -44,11 +44,14 @@ class Agent {
         if (block) {
             // console.log(blocks.indexOf(block))
             // element = blocks[blocks.indexOf(block)]
-            if (this.Y >= block.y && this.Y <= block.y + 40) {
-                return true
-            } else {
+            if (this.Y - 40 >= block.y) {
                 this.score = score
                 return false
+            } else if (this.Y <= block.y - 40) {
+                this.score = score
+                return false
+            } else {
+                return true
             }
         } else {
             this.score = score
